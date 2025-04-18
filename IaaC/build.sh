@@ -1,12 +1,14 @@
 #!/bin/bash
 set -e
 
-PROJECT_PATH="../src"
-CONFIG="Release"
-OUTPUT_DIR="../build"
+# Move to the repo root (assuming this script is in ./IaaC)
+cd "$(dirname "$0")/.."
 
-echo "🔨 Building $PROJECT_PATH..."
-dotnet build "$PROJECT_PATH" --configuration $CONFIG
+CONFIG="Release"
+OUTPUT_DIR="build"
+
+echo "🔨 Building solution in $(pwd) ..."
+dotnet build Quantum.Core.sln --configuration $CONFIG
 
 echo "📦 Packing..."
-dotnet pack "$PROJECT_PATH" --configuration $CONFIG --output $OUTPUT_DIR
+dotnet pack Quantum.Core.sln --configuration $CONFIG --output $OUTPUT_DIR
