@@ -13,5 +13,5 @@ fi
 
 echo "🚀 Publishing $PACKAGE_PATH to GitHub Packages..."
 dotnet nuget push "$PACKAGE_PATH" \
-  --source "github" \
+  --source "https://github.com/Quantum-Space-Org" \
   --api-key "$GITHUB_TOKEN"
