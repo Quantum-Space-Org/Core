@@ -1,15 +1,24 @@
 # Exit on error
 $ErrorActionPreference = "Stop"
 
-# Find the .nupkg file in the build directory
-$PACKAGE_PATH = Get-ChildItem -Path "../build" -Filter "*.nupkg" | Select-Object -First 1
+# Move to repo root (assuming this script is in ./IaaC)
+Set-Location (Join-Path $PSScriptRoot "..")
 
-if ($null -eq $PACKAGE_PATH) {
-    Write-Host "❌ No .nupkg file found in ../build"
-    exit 1
+$buildDir = "./build"
+$nugetSource = "https://nuget.pkg.github.com/Quantum-Space-Org/index.json"
+
+# Get all .nupkg files
+$packages = Get-ChildItem -Path $buildDir -Filter *.nupkg
+
+if (-not $packages) {
+  Write-Host "❌ No .nupkg files found in $buildDir"
+  exit 1
 }
 
-Write-Host "🚀 Publishing $PACKAGE_PATH to GitHub Packages..."
-dotnet nuget push $PACKAGE_PATH.FullName `
-  --source "github" `
-  --api-key "$env:GITHUB_TOKEN"
+# Group by package name and get the highest version
+$latestPackages = $packages |
+ForEach-Object {
+  # Example: Quantum.Core.1.0.2.nupkg -> [Name=Quantum.Core, Version=1.0.2]
+  if ($_ -match "^(.*)\.(\d+\.\d+\.\d+(-[A-Za-z0-9\.]+)?)\.nupkg$") {
+    [PSCustomObject]@{
+      Name
