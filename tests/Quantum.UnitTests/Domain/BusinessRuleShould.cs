@@ -1,5 +1,4 @@
 ﻿using Quantum.Domain.BusinessRule;
-using Quantum.UnitTests.Domain.TestSpecificClasses;
 
 namespace Quantum.UnitTests.Domain;
 

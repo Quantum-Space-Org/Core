@@ -1,5 +1,4 @@
-﻿using Quantum.UnitTests.Domain.TestSpecificClasses;
-using Quantum.UnitTests.EventSourcing.CustomerAggregate;
+﻿using Quantum.UnitTests.EventSourcing.CustomerAggregate;
 
 namespace Quantum.UnitTests.Domain
 {

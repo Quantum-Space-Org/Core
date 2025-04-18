@@ -1,6 +1,4 @@
-﻿using Quantum.UnitTests.Domain.TestSpecificClasses;
-
-namespace Quantum.UnitTests.Domain;
+﻿namespace Quantum.UnitTests.Domain;
 
 public class ValueObjectTests
 {
