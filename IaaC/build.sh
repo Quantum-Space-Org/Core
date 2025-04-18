@@ -5,7 +5,7 @@ set -e
 cd "$(dirname "$0")/.."
 
 CONFIG="Release"
-OUTPUT_DIR="build"
+OUTPUT_DIR="./build"  # This will ensure the build folder is in the root
 
 echo "🔨 Building solution in $(pwd) ..."
 dotnet build Quantum.Core.sln --configuration $CONFIG

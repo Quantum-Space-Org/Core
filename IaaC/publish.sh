@@ -1,10 +1,13 @@
 #!/bin/bash
 set -e
 
-PACKAGE_PATH=$(find ../build -name "*.nupkg" | head -n 1)
+# Move to the repo root (assuming this script is in ./IaaC)
+cd "$(dirname "$0")/.."
+
+PACKAGE_PATH=$(find ./build -name "*.nupkg" | head -n 1)
 
 if [ -z "$PACKAGE_PATH" ]; then
-  echo "❌ No .nupkg file found in ../build"
+  echo "❌ No .nupkg file found in ./build"
   exit 1
 fi
 
