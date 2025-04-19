@@ -28,7 +28,6 @@ for PACKAGE in $nupkgs; do
   FILE_NAME=$(basename "$PACKAGE" .nupkg)
 
   # Use regex to match and extract the package name and version
-  # The new regex will match a "Quantum." prefix, followed by any alphanumeric string (including periods)
   if [[ "$FILE_NAME" =~ ^(Quantum\.[A-Za-z0-9\.\-]+)\.([0-9]+\.[0-9]+\.[0-9]+.*)$ ]]; then
     PACKAGE_ID="${BASH_REMATCH[1]}"
     VERSION="${BASH_REMATCH[2]}"
@@ -40,7 +39,6 @@ for PACKAGE in $nupkgs; do
       package_paths["$PACKAGE_ID"]="$PACKAGE"
     fi
   else
-    # If the filename doesn't match the expected pattern, print a warning
     echo "⚠️ Skipping unrecognized package filename format: $FILE_NAME"
   fi
 done
@@ -52,19 +50,15 @@ for PACKAGE_ID in "${!package_paths[@]}"; do
   PACKAGE="${package_paths["$PACKAGE_ID"]}"
   echo "🚀 Publishing $PACKAGE to GitHub Packages..."
 
-  # Attempt to push the package and handle conflicts gracefully
-  OUTPUT=$(dotnet nuget push "$PACKAGE" --source "$NUGET_SOURCE" --skip-duplicate --api-key "$GITHUB_TOKEN" 2>&1)
+  OUTPUT=$(dotnet nuget push "$PACKAGE" --source "$NUGET_SOURCE" --api-key "$GITHUB_TOKEN" 2>&1)
 
-  # Check if there is a conflict (409 error)
   if [[ "$OUTPUT" == *"409 Conflict"* ]]; then
-    # Handle 409 Conflict error gracefully
+    # Handle the conflict gracefully
     echo "⚠️ Package $PACKAGE has already been published. Skipping..."
   elif [[ "$OUTPUT" == *"Error"* ]]; then
-    # Handle other errors
     echo "❌ Error occurred while publishing $PACKAGE. Error details: $OUTPUT"
     exit 1
   else
-    # Successfully published
     echo "✅ Successfully published $PACKAGE"
   fi
 done
