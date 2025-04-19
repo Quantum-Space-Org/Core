@@ -25,7 +25,8 @@ for PACKAGE in $nupkgs; do
   echo "🚀 Publishing $PACKAGE to GitHub Packages..."
 
   # Capture the output and error of the push attempt
-  OUTPUT=$(dotnet nuget push "$PACKAGE" --source "$NUGET_SOURCE" --api-key "$GITHUB_TOKEN" 2>&1)
+  OUTPUT=$(dotnet nuget push "$PACKAGE" --source "$NUGET_SOURCE" --api-key "$GITHUB_TOKEN" --skip-duplicate 2>&1)
+
 
   # Print the raw output for debugging purposes
   echo "$OUTPUT"
