@@ -31,6 +31,9 @@ for PACKAGE in $nupkgs; do
   # Capture the output and error of the push attempt
   OUTPUT=$(dotnet nuget push "$PACKAGE" --source "$NUGET_SOURCE" --api-key "$GITHUB_TOKEN" 2>&1)
   
+  # Print the raw output for debugging purposes
+  echo "$OUTPUT"
+
   # Check if the error is a 409 Conflict, which indicates the package has already been pushed
   if echo "$OUTPUT" | grep -q "409 Conflict"; then
     echo "⚠️ Package $PACKAGE has already been published (409 Conflict). Skipping..."
