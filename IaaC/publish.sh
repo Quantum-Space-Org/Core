@@ -27,8 +27,8 @@ fi
 while IFS= read -r PACKAGE; do
   FILE_NAME=$(basename "$PACKAGE" .nupkg)
 
-  # Use regex to split package name and version
-  if [[ "$FILE_NAME" =~ ^(.+)-([0-9]+\.[0-9]+\.[0-9]+.*)$ ]]; then
+  # Use regex to split package name and version (updated pattern)
+  if [[ "$FILE_NAME" =~ ^([a-zA-Z0-9._-]+)-([0-9]+\.[0-9]+\.[0-9]+.*)$ ]]; then
     PACKAGE_ID="${BASH_REMATCH[1]}"
     VERSION="${BASH_REMATCH[2]}"
 
