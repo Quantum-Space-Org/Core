@@ -32,7 +32,7 @@ for PACKAGE in $nupkgs; do
     --source "$NUGET_SOURCE" \
     --api-key "$GITHUB_TOKEN"; then
     # Handle the conflict error (409), meaning the package was already published
-    if [[ $? -eq 1 ]]; then
+    if [[ $? -eq 1 && $(dotnet nuget push "$PACKAGE" --source "$NUGET_SOURCE" --api-key "$GITHUB_TOKEN" 2>&1 | grep -c "409 Conflict") -gt 0 ]]; then
       echo "⚠️ Package $PACKAGE has already been published (409 Conflict). Skipping..."
     else
       echo "❌ Error occurred while publishing $PACKAGE. Exiting..."
