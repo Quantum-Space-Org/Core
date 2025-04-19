@@ -28,14 +28,17 @@ for PACKAGE in $nupkgs; do
   # Attempt to push the package
   echo "🚀 Publishing $PACKAGE to GitHub Packages..."
   
-  if ! dotnet nuget push "$PACKAGE" \
-    --source "$NUGET_SOURCE" \
-    --api-key "$GITHUB_TOKEN"; then
-    # Handle the conflict error (409), meaning the package was already published
-    if [[ $? -eq 1 && $(dotnet nuget push "$PACKAGE" --source "$NUGET_SOURCE" --api-key "$GITHUB_TOKEN" 2>&1 | grep -c "409 Conflict") -gt 0 ]]; then
-      echo "⚠️ Package $PACKAGE has already been published (409 Conflict). Skipping..."
-    else
+  # Capture the output and error of the push attempt
+  OUTPUT=$(dotnet nuget push "$PACKAGE" --source "$NUGET_SOURCE" --api-key "$GITHUB_TOKEN" 2>&1)
+  
+  # Check if the error is a 409 Conflict, which indicates the package has already been pushed
+  if echo "$OUTPUT" | grep -q "409 Conflict"; then
+    echo "⚠️ Package $PACKAGE has already been published (409 Conflict). Skipping..."
+  else
+    # If another error occurs, display it and exit
+    if [[ $? -ne 0 ]]; then
       echo "❌ Error occurred while publishing $PACKAGE. Exiting..."
+      echo "$OUTPUT"
       exit 1
     fi
   fi
