@@ -39,27 +39,48 @@ for PACKAGE in $nupkgs; do
       package_paths["$PACKAGE_ID"]="$PACKAGE"
     fi
   else
+    # If the filename doesn't match the expected pattern, print a warning
     echo "⚠️ Skipping unrecognized package filename format: $FILE_NAME"
   fi
 done
 
-# Now publish only the latest version for each package
+# Function to increment version (patch level)
+increment_version() {
+  local version=$1
+  local IFS='.'
+  IFS='.' read -r -a version_parts <<< "$version"
+  local patch="${version_parts[2]}"
+  patch=$((patch + 1)) # Increment the patch version
+  echo "${version_parts[0]}.${version_parts[1]}.$patch"
+}
+
+# Now publish only the latest versions for each package
 echo "🚀 Starting to publish the latest versions of packages..."
 
 for PACKAGE_ID in "${!package_paths[@]}"; do
   PACKAGE="${package_paths["$PACKAGE_ID"]}"
-  echo "🚀 Publishing $PACKAGE to GitHub Packages..."
+  VERSION="${latest_versions["$PACKAGE_ID"]}"
 
+  echo "🚀 Publishing $PACKAGE (Version: $VERSION) to GitHub Packages..."
+
+  # Attempt to push the package and handle conflicts gracefully
   OUTPUT=$(dotnet nuget push "$PACKAGE" --source "$NUGET_SOURCE" --api-key "$GITHUB_TOKEN" 2>&1)
 
+  # If a 409 Conflict occurs, bump the version and retry
   if [[ "$OUTPUT" == *"409 Conflict"* ]]; then
-    # Handle the conflict gracefully
-    echo "⚠️ Package $PACKAGE has already been published. Skipping..."
+    echo "⚠️ Version $VERSION of package $PACKAGE_ID already exists. Incrementing version..."
+    # Increment the version and publish the new version
+    NEW_VERSION=$(increment_version "$VERSION")
+    NEW_PACKAGE="${PACKAGE_ID}.${NEW_VERSION}.nupkg"
+    echo "🚀 Publishing new version: $NEW_PACKAGE to GitHub Packages..."
+    dotnet nuget push "$NEW_PACKAGE" --source "$NUGET_SOURCE" --api-key "$GITHUB_TOKEN"
   elif [[ "$OUTPUT" == *"Error"* ]]; then
+    # Handle other errors
     echo "❌ Error occurred while publishing $PACKAGE. Error details: $OUTPUT"
     exit 1
   else
-    echo "✅ Successfully published $PACKAGE"
+    # Successfully published
+    echo "✅ Successfully published $PACKAGE (Version: $VERSION)"
   fi
 done
 
