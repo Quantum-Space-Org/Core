@@ -13,7 +13,7 @@ declare -A package_paths
 echo "🔍 Searching for NuGet packages in ./build ..."
 
 # Find all .nupkg files
-PKG_LIST=$(find ./build -name "*.nupkg")
+PKG_LIST=$(find ./build -name "Quantum*.nupkg")
 
 if [[ -z "$PKG_LIST" ]]; then
   echo "❌ No .nupkg files found in ./build"
@@ -27,8 +27,9 @@ fi
 while IFS= read -r PACKAGE; do
   FILE_NAME=$(basename "$PACKAGE" .nupkg)
 
-  # Use regex to split package name and version (updated pattern)
-  if [[ "$FILE_NAME" =~ ^([a-zA-Z0-9._-]+)-([0-9]+\.[0-9]+\.[0-9]+.*)$ ]]; then
+  # Use regex to split package name and version
+  # Ensures the package starts with "Quantum" and ends with ".*.*.*.nupkg"
+  if [[ "$FILE_NAME" =~ ^Quantum([a-zA-Z0-9._-]+)-([0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9._-]+)*)$ ]]; then
     PACKAGE_ID="${BASH_REMATCH[1]}"
     VERSION="${BASH_REMATCH[2]}"
 
