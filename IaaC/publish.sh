@@ -6,9 +6,6 @@ cd "$(dirname "$0")/.."
 
 NUGET_SOURCE="https://nuget.pkg.github.com/Quantum-Space-Org/index.json"
 
-# Initialize an array to store all found .nupkg files
-declare -a nupkgs
-
 # Find all .nupkg files in ./build
 echo "🔍 Searching for NuGet packages in ./build ..."
 nupkgs=$(find ./build -name "*.nupkg")
@@ -25,20 +22,19 @@ echo "$nupkgs"
 echo "🚀 Starting to publish all packages..."
 
 for PACKAGE in $nupkgs; do
-  # Attempt to push the package
   echo "🚀 Publishing $PACKAGE to GitHub Packages..."
-  
+
   # Capture the output and error of the push attempt
   OUTPUT=$(dotnet nuget push "$PACKAGE" --source "$NUGET_SOURCE" --api-key "$GITHUB_TOKEN" 2>&1)
-  
+
   # Print the raw output for debugging purposes
   echo "$OUTPUT"
 
-  # Check if the error is a 409 Conflict, which indicates the package has already been pushed
+  # If the error is a 409 Conflict (package already published), skip the package
   if echo "$OUTPUT" | grep -q "409 Conflict"; then
-    echo "⚠️ Package $PACKAGE has already been published (409 Conflict). Skipping..."
+    echo "⚠️ Package $PACKAGE has already been published. Skipping..."
   else
-    # If another error occurs, display it and exit
+    # If another error occurs, print the error and exit
     if [[ $? -ne 0 ]]; then
       echo "❌ Error occurred while publishing $PACKAGE. Exiting..."
       echo "$OUTPUT"
