@@ -84,4 +84,4 @@ for PACKAGE_ID in "${!package_paths[@]}"; do
   fi
 done
 
-echo "✅ All latest versions of the packages have been processed successfully!"
+echo "✅ All latest versions of the packages have been processed successfully!" 
