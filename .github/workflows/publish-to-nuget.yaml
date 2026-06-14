@@ -27,5 +27,5 @@ jobs:
       - name: Pack NuGet package
         run: dotnet pack --configuration Release --no-build --output nupkg
       
-      - name: Push to NuGet.org (Trusted Publisher)
-        run: dotnet nuget push nupkg/*.nupkg --source https://api.nuget.org/v3/index.json --skip-duplicate
+      - name: Push to NuGet.org
+        run: dotnet nuget push nupkg/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
