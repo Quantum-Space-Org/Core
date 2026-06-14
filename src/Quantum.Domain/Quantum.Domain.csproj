@@ -7,7 +7,6 @@
 		<Authors>Masoud Bahrami</Authors>
 		<Company>Quantum Space Fundation</Company>
 		<Version>0.0.1</Version>
-                <PackageId>Quantum.Core.Real</PackageId>
 		<PackageProjectUrl>https://github.com/Quantum-Space-Org/Core</PackageProjectUrl>
 
 	</PropertyGroup>
@@ -17,14 +16,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\Quantum.Core\Quantum.Core.csproj" />
+	  <ProjectReference Include="..\Quantum.Configurator\Quantum.Configurator.csproj" />
+	  <ProjectReference Include="..\Quantum.Core\Quantum.Core.csproj" />
 	</ItemGroup>
 
 </Project>

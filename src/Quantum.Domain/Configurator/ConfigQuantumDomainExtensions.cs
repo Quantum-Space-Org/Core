@@ -24,8 +24,8 @@ public class ConfigQuantumDomainBuilder(QuantumServiceCollection collection)
                                                                 && t.Name.EndsWith("DomainService"));
             foreach (var d in domainServices)
             {
-                collection.Collection.Add(new Microsoft.Extensions.DependencyInjection.ServiceDescriptor
-                    (d.GetInterfaces()[0], d, Microsoft.Extensions.DependencyInjection.ServiceLifetime.Transient));
+                collection.Collection.Add(new ServiceDescriptor
+                    (d.GetInterfaces()[0], d, ServiceLifetime.Transient));
             }
         }
         return this;

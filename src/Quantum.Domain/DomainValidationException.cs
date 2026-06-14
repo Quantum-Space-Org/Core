@@ -1,4 +1,5 @@
-﻿using Quantum.Core;
+﻿
+using Quantum.Core;
 
 namespace Quantum.Domain;
 
